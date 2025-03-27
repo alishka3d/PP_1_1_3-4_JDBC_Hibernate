@@ -43,7 +43,7 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void dropUsersTable() throws SQLException {
-        preparedStatement = connection.prepareStatement("DROP TABLE Users;");
+        preparedStatement = connection.prepareStatement("DROP TABLE IF EXISTS Users");
         preparedStatement.executeUpdate();
     }
 
@@ -55,8 +55,10 @@ public class UserDaoJDBCImpl implements UserDao {
         preparedStatement.executeUpdate();
     }
 
-    public void removeUserById(long id) {
-
+    public void removeUserById(long id) throws SQLException {
+        preparedStatement = connection.prepareStatement("DELETE FROM Users WHERE id=?");
+        preparedStatement.setLong(1, id);
+        preparedStatement.executeUpdate();
     }
 
     public List<User> getAllUsers() throws SQLException {
@@ -75,7 +77,8 @@ public class UserDaoJDBCImpl implements UserDao {
         return users;
     }
 
-    public void cleanUsersTable() {
-
+    public void cleanUsersTable() throws SQLException {
+        preparedStatement = connection.prepareStatement("DELETE FROM Users");
+        preparedStatement.executeUpdate();
     }
 }
