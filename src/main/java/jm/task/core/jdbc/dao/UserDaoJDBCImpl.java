@@ -1,44 +1,28 @@
 package jm.task.core.jdbc.dao;
 
 import jm.task.core.jdbc.model.User;
+import jm.task.core.jdbc.util.Util;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class UserDaoJDBCImpl implements UserDao {
-    private static Connection connection;
+    private static final Connection connection = Util.getConnection();
     private static PreparedStatement preparedStatement;
-    private static ResultSet resultSet;
-
-    private static final String URL = "jdbc:postgresql://localhost:5432/postgres";
-    private static final String USER = "postgres";
-    private static final String PASSWORD = "999138";
-
-    static {
-        try {
-            Class.forName("org.postgresql.Driver");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-        try {
-            connection = DriverManager.getConnection(URL, USER, PASSWORD);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     public UserDaoJDBCImpl() {
 
     }
 
     public void createUsersTable() throws SQLException {
-        preparedStatement = connection.prepareStatement("create table Users(\n" +
-                "    id bigint,\n" +
-                "    name varchar,\n" +
-                "    last_name varchar,\n" +
-                "    age smallint\n" +
-                ");");
+        preparedStatement = connection.prepareStatement("""
+                CREATE TABLE IF NOT EXISTS Users(
+                    id bigint,
+                    name varchar,
+                    last_name varchar,
+                    age smallint
+                );""");
         preparedStatement.executeUpdate();
     }
 
@@ -62,10 +46,10 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public List<User> getAllUsers() throws SQLException {
-        List<User> users = new ArrayList<User>();
+        List<User> users = new ArrayList<>();
         String query = "SELECT * FROM Users;";
         preparedStatement = connection.prepareStatement(query);
-        resultSet = preparedStatement.executeQuery();
+        ResultSet resultSet = preparedStatement.executeQuery();
         while (resultSet.next()) {
             User user = new User();
             user.setId(resultSet.getLong("id"));
@@ -78,6 +62,7 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void cleanUsersTable() throws SQLException {
+        createUsersTable(); // для избежания ошибки, если таблицы не существует
         preparedStatement = connection.prepareStatement("DELETE FROM Users");
         preparedStatement.executeUpdate();
     }

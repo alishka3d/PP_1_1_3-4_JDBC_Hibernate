@@ -11,7 +11,6 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) throws SQLException {
         UserServiceImpl userService = new UserServiceImpl();
-        List<User> users = userService.getAllUsers();
-        System.out.println(users);
+        userService.cleanUsersTable();
     }
 }
