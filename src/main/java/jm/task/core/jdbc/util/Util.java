@@ -13,7 +13,7 @@ public class Util {
     private static final Connection connection;
     private static final SessionFactory sessionFactory = buildSessionFactory();
 
-    private static final String URL = "jdbc:postgresql://localhost:5433/postgres";
+    private static final String URL = "jdbc:postgresql://localhost:5432/postgres";
     private static final String USER = "postgres";
     private static final String PASSWORD = "999138";
     private static final String DIALECT = "org.hibernate.dialect.PostgreSQLDialect";
